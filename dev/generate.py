@@ -119,10 +119,10 @@ def tests(start,
     name = f"Test{year}"
 
     imports = [
-        "static org.junit.Assert.assertEquals",
+        "static org.junit.jupiter.api.Assertions.assertEquals",
+        "org.junit.jupiter.api.Disabled",
+        "org.junit.jupiter.api.Test",
         f"src.year{year}.*",
-        "org.junit.Ignore",
-        "org.junit.Test",
     ]
 
     doc_string = [
@@ -133,7 +133,7 @@ def tests(start,
     ]
 
     function = [
-        "@Ignore",
+        "@Disabled",
         "@Test",
         "public void testDD() {",
         "    assertEquals(\"TBI\", new DecemberDD().solve());",
@@ -192,5 +192,5 @@ if __name__ == "__main__":
         print("To run this script, you have to enforce it with -f or -F.")
         sys.exit(1)
 
-    dates(1, 25)
-    tests(1, 25)
+    dates(1, 25, year=2021)
+    tests(1, 25, year=2021)

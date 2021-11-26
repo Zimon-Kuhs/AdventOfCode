@@ -3,15 +3,15 @@ package test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import src.year2021.*;
+import src.year2020.*;
 
 /**
- *  Tests the problems for year 2021.
- *  
+ *  Tests the problems for year 2020.
+ *
  *  @author Zimon Kuhs
- *  @date   2021-12-DD
+ *  @date   2020-12-DD
  */
-public final class Test2021 {
+public final class Test2020 {
 
     @Disabled
     @Test
