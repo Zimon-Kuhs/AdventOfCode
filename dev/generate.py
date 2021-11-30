@@ -67,14 +67,16 @@ def as_string(file_path):
 def dates(start,
           end,
           year=2021,
+          extension="py",
           target_date=1,
           target_folder="src"):
     """
-        Generates a .java-file for each date in December up to the 25th.
+        Generates a .py-file for each date in December up to the 25th.
 
         @param start            The starting date, inclusive.
         @param end              The ending date, inclusive.
         @param year             The year in question.
+        @param extension        The file extension to use.
         @param target_date      Blueprint date number.
         @param target_folder    Years' folder.
     """
@@ -84,24 +86,36 @@ def dates(start,
 
     directory = f"{target_folder}/year{str(year)}"
     blueprint = as_string(
-        f"{directory}/December{target_date:02d}.java"
+        f"{directory}/december_{target_date:02d}.{extension}"
     )
 
+    exports = []
     for date in range(1, 26):
 
-        the_path = f"{directory}/December{date:02d}.java"
-        with open(the_path, "w", encoding="utf-8") as the_file:
+        name = f"december_{date:02d}"
+        exports.append(name)
 
-            print()
+        the_file = f"{directory}/{name}.{extension}"
+
+        print(f"Writing to {the_file}")
+        with open(the_file, "w", encoding="utf-8") as source_file:
+
             contents = blueprint.replace(f"0{target_date}", f"{date:02d}")
-            the_file.write(contents)
+            source_file.write(contents)
+        print()
+
+    print(f"Writing to {directory}/__init__.py")
+    with open(f"{directory}/__init__.py", "w", encoding="utf-8") as init:
+        for export in exports:
+            init.write(f"from .{export} import solve as {export}\n")
+    print()
 
 
 def tests(start,
           end,
           year=2021,
-          folder="test",
-          package="test"):
+          extension="py",
+          folder="test"):
     """
         Writes a test-file.
 
@@ -109,65 +123,70 @@ def tests(start,
             -   Add prefix to *all* written lines.
             -   The main write loop should be split into functions.
 
-        @param start    The starting date, inclusive.
-        @param end      The ending date, inclusive.
-        @param year     The year in question.
-        @param folder   The folder to write to.
-        @param package  Blueprint folder.
+        @param start        The starting date, inclusive.
+        @param end          The ending date, inclusive.
+        @param year         The year in question.
+        @param extension    The file extension to use.
+        @param folder       The folder to write to.
     """
 
     name = f"Test{year}"
 
     imports = [
-        "static org.junit.jupiter.api.Assertions.assertEquals",
-        "org.junit.jupiter.api.Disabled",
-        "org.junit.jupiter.api.Test",
-        f"src.year{year}.*",
+        "unittest",
+        f"year{year} as year",
     ]
 
     doc_string = [
         f"Tests the problems for year {year}.",
         "",
         "@author Zimon Kuhs",
-        f"@date   {year}-12-DD",
+        f"@date   {year}-12-01",
     ]
 
     function = [
-        "@Disabled",
-        "@Test",
-        "public void testDD() {",
-        "    assertEquals(\"TBI\", new DecemberDD().solve());",
-        "}"
+        "def test_december_DD(self):",
+        f"    self.assertEqual(\"TBI\", year.december_DD())",
+    ]
+
+    the_main = [
+        "if __name__ == \"__main__\":",
+        "    unittest.main()"
     ]
 
     pre = Prefix("    ")
-    the_path = os.path.abspath(f"{folder}/Test{year}.java")
+    the_path = os.path.abspath(f"{folder}/test_{year}.{extension}")
+
     print(f"Writing to {the_path}")
-
-    with open(the_path, "x", encoding="utf-8") as the_file:
-        if package:
-            the_file.write(f"package {package};\n\n")
-
-        for include in imports:
-            the_file.write(f"{pre.string()}import {include};\n")
-        the_file.write("\n")
-
+    with open(the_path, "w", encoding="utf-8") as the_file:
         #
         #   Write the docstring.
         #
 
         if doc_string:
-            the_file.write("/**\n")
-        for line in doc_string:
-            the_file.write(f" *  {line}\n")
-        if doc_string:
-            the_file.write(" */\n")
+            comment_guard = "\"\"\"\n"
+            the_file.write(comment_guard)
+
+            for line in doc_string:
+                the_file.write(f"    {line}\n")
+
+            the_file.write(f"{comment_guard}\n")
+
+        #
+        #   Write the imports.
+        #
+
+        the_file.write("import os\nimport sys\n\nsys.path.append(os.path.abspath(\"./src\"))\n\n")
+        for include in imports:
+            the_file.write(f"{pre.string()}import {include}\n")
+
+        the_file.write("\n")
 
         #
         #   Write the class.
         #
 
-        the_file.write(f"public final class {name} {{\n\n")
+        the_file.write(f"class {name}(unittest.TestCase):\n\n")
         pre.adjust(1)
 
         #
@@ -184,7 +203,10 @@ def tests(start,
             the_file.write("\n")
 
         pre.adjust(-1)
-        the_file.write("}\n\n")
+        the_file.write("\n")
+
+        for line in the_main:
+            the_file.write(f"{line}\n")
 
 
 if __name__ == "__main__":
