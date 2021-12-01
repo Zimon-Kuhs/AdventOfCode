@@ -5,5 +5,12 @@
     @date   2021-12-09
 """
 
+
 def solve():
+    """
+        Solves the problem for December 09.
+
+        @return the solution to the problem.
+    """
+
     return "TBI"
