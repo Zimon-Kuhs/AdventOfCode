@@ -1,18 +1,23 @@
 """
     Tests the problems for year 2021.
-    
+
     @author Zimon Kuhs
     @date   2021-12-01
 """
 
+
 import os
 import sys
+import unittest
 
 sys.path.append(os.path.abspath("./src"))
 
-import unittest
-import year2021 as year
+# pylint: disable=import-error, wrong-import-position
+# pep8: disable=E402
+import year2021 as year     # noqa
 
+
+# pylint: disable=missing-class-docstring, missing-function-docstring
 class Test2021(unittest.TestCase):
 
     def test_december_01(self):

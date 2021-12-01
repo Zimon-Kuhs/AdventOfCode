@@ -64,6 +64,7 @@ def as_string(file_path):
         return text_file.read()
 
 
+# pylint: disable=too-many-arguments, too-many-locals
 def dates(start,
           end,
           year=2021,
@@ -111,6 +112,7 @@ def dates(start,
     print()
 
 
+# pylint: disable=too-many-arguments, too-many-locals
 def tests(start,
           end,
           year=2021,
@@ -146,7 +148,7 @@ def tests(start,
 
     function = [
         "def test_december_DD(self):",
-        f"    self.assertEqual(\"TBI\", year.december_DD())",
+        "    self.assertEqual(\"TBI\", year.december_DD())",
     ]
 
     the_main = [
