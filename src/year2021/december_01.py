@@ -5,18 +5,7 @@
     @date   2021-12-01
 """
 
-example_report = [
-    199,
-    200,
-    208,
-    210,
-    200,
-    207,
-    240,
-    269,
-    260,
-    263
-]
+import os
 
 
 def solve():
@@ -26,8 +15,13 @@ def solve():
         @return the solution to the problem.
     """
 
+    os.chdir(os.path.dirname(__file__))
+
+    with open("data/december_01.txt", "r", encoding="utf-8") as the_file:
+        contents = [int(depth) for depth in the_file.readlines()]
+
     result = 0
-    for i in range(1, len(example_report)):
-        result += 1 if example_report[i] > example_report[i - 1] else 0
+    for i in range(1, len(contents)):
+        result += 1 if contents[i] > contents[i - 1] else 0
 
     return result
