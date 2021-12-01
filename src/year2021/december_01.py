@@ -5,6 +5,19 @@
     @date   2021-12-01
 """
 
+example_report = [
+    199,
+    200,
+    208,
+    210,
+    200,
+    207,
+    240,
+    269,
+    260,
+    263
+]
+
 
 def solve():
     """
@@ -13,4 +26,8 @@ def solve():
         @return the solution to the problem.
     """
 
-    return "TBI"
+    result = 0
+    for i in range(1, len(example_report)):
+        result += 1 if example_report[i] > example_report[i - 1] else 0
+
+    return result
