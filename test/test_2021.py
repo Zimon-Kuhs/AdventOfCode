@@ -21,7 +21,7 @@ import year2021 as year     # noqa
 class Test2021(unittest.TestCase):
 
     def test_december_01(self):
-        self.assertEqual(1557, year.december_01())
+        self.assertEqual(5, year.december_01())
 
     def test_december_02(self):
         self.assertEqual("TBI", year.december_02())
