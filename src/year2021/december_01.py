@@ -7,6 +7,9 @@
 
 import os
 
+#   Ensures ../data/december_01.txt is located.
+data_file = os.path.join(os.path.dirname(__file__), "data/december_01.txt")
+
 
 def solve():
     """
@@ -15,13 +18,24 @@ def solve():
         @return the solution to the problem.
     """
 
-    os.chdir(os.path.dirname(__file__))
+    with open(data_file, "r", encoding="utf-8") as data:
+        depths = [int(depth) for depth in data.readlines()]
 
-    with open("data/december_01.txt", "r", encoding="utf-8") as the_file:
-        contents = [int(depth) for depth in the_file.readlines()]
+    depths = [
+        199,
+        200,
+        208,
+        210,
+        200,
+        207,
+        240,
+        269,
+        260,
+        263
+    ]
 
     result = 0
-    for i in range(1, len(contents)):
-        result += 1 if contents[i] > contents[i - 1] else 0
+    for i in range(len(depths) - 3):
+        result += 1 if sum(depths[i + 1: i + 4]) > sum(depths[i: i + 3]) else 0
 
     return result
