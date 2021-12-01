@@ -3,12 +3,10 @@
 
     @author Zimon Kuhs
     @date   2021-12-01
+    @see    https://adventofcode.com/2021/day/1
 """
 
 import os
-
-#   Ensures ../data/december_01.txt is located.
-data_file = os.path.join(os.path.dirname(__file__), "data/december_01.txt")
 
 
 def solve():
@@ -18,24 +16,23 @@ def solve():
         @return the solution to the problem.
     """
 
-    with open(data_file, "r", encoding="utf-8") as data:
-        depths = [int(depth) for depth in data.readlines()]
+    return sonar_sweep(os.path.join(os.path.dirname(__file__), "data/december_01.txt"), 3)
 
-    depths = [
-        199,
-        200,
-        208,
-        210,
-        200,
-        207,
-        240,
-        269,
-        260,
-        263
-    ]
 
-    result = 0
-    for i in range(len(depths) - 3):
-        result += 1 if sum(depths[i + 1: i + 4]) > sum(depths[i: i + 3]) else 0
+def sonar_sweep(data_path, length):
+    """
+        Calculates the number of times the sum of the elements of a slice of a specified length is
+        greater than the previous slice of the same length.
 
-    return result
+
+
+        @param  data_path   File path to the input data consisting of newline-separated numbers.
+        @param  length      The length of the slices to use for sum calculation.
+        @return             the amount of slice-sums that are greater than their previous adjacent ones.
+    """
+
+    with open(data_path, "r", encoding="utf-8") as data:
+        depths = [float(depth) for depth in data.readlines()]
+
+        return len([index for index in range(0, len(depths) - length) if depths[index] < depths[index + length]])
+
