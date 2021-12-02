@@ -1,9 +1,51 @@
 """
     Solves the 2021-12-02 problem.
+    <p>
+    I like
 
     @author Zimon Kuhs
     @date   2021-12-02
+    @see    https://adventofcode.com/2021/day/2
 """
+
+import os
+
+VALID_COMMANDS = [
+    "down",
+    "forward",
+    "up",
+]
+
+
+def position(input_list, depth=0, length=0):
+    """
+        Calculates the current position based on a collection of commands.
+
+        @param input_list   The list of command strings.
+        @param depth        The initial depth.
+        @param length       The initial length.
+    """
+
+    if (depth | length) < 0:
+        raise ValueError(f"Invalid starting position ({depth}, {length})")
+
+    for line in input_list:
+        command, magnitude, *remainder = line.split()
+
+        if remainder:
+            raise ValueError(f"Too many entries in command: {command}")
+        if command not in VALID_COMMANDS:
+            raise ValueError(f"Invalid command: {command}")
+
+        mod = int(magnitude)
+        if command == "down":
+            depth += mod
+        elif command == "forward":
+            length += mod
+        elif command == "up":
+            depth -= mod
+
+    return depth, length
 
 
 def solve():
@@ -13,4 +55,9 @@ def solve():
         @return the solution to the problem.
     """
 
-    return "TBI"
+    the_path = os.path.join(os.path.dirname(__file__), "data/december_02.txt")
+
+    with open(the_path, "r", encoding="utf-8") as data:
+        depth, length = position(data.readlines())
+
+    return depth * length

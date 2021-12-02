@@ -35,4 +35,3 @@ def sonar_sweep(data_path, length):
         depths = [float(depth) for depth in data.readlines()]
 
         return len([index for index in range(0, len(depths) - length) if depths[index] < depths[index + length]])
-
