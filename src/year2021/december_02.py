@@ -1,7 +1,5 @@
 """
     Solves the 2021-12-02 problem.
-    <p>
-    I like
 
     @author Zimon Kuhs
     @date   2021-12-02
@@ -17,13 +15,15 @@ VALID_COMMANDS = [
 ]
 
 
-def position(input_list, depth=0, length=0):
+def position(input_list, depth=0, length=0, aim=0):
     """
         Calculates the current position based on a collection of commands.
 
         @param input_list   The list of command strings.
         @param depth        The initial depth.
         @param length       The initial length.
+        @param aim          The initial aim.
+        @return             The current position based on the "executed" commands.
     """
 
     if (depth | length) < 0:
@@ -39,11 +39,12 @@ def position(input_list, depth=0, length=0):
 
         mod = int(magnitude)
         if command == "down":
-            depth += mod
+            aim += mod
         elif command == "forward":
             length += mod
+            depth += mod * aim
         elif command == "up":
-            depth -= mod
+            aim -= mod
 
     return depth, length
 
