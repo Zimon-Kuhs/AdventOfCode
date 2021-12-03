@@ -7,22 +7,13 @@
 
 from os.path import basename, dirname, join, realpath
 
-
-def parse_binary(string_list):
-    """
-        @param string_list  A list of strings, or a string.
-        @return             The input converted to binary numbers.
-    """
-
-    if not isinstance(string_list, list):
-        string_list = [string_list]
-
-    return [int(number, base=2) for number in string_list]
+from .binary      import *
+from .collections import *
 
 
 def parse_problem(script):
     """
-        @return all lines in a file as a list.
+        @return All lines in a file as a list.
     """
 
     base = basename(script).split(".")[1]

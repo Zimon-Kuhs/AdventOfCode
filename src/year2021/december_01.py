@@ -13,7 +13,7 @@ def solve():
     """
         Solves the problem for December 01.
 
-        @return the solution to the problem.
+        @return The solution to the problem.
     """
 
     return sonar_sweep(os.path.join(os.path.dirname(__file__), "data/december_01.txt"), 3)
@@ -28,7 +28,7 @@ def sonar_sweep(data_path, length):
 
         @param  data_path   File path to the input data consisting of newline-separated numbers.
         @param  length      The length of the slices to use for sum calculation.
-        @return             the amount of slice-sums that are greater than their previous adjacent ones.
+        @return             The amount of slice-sums that are greater than their previous adjacent ones.
     """
 
     with open(data_path, "r", encoding="utf-8") as data:

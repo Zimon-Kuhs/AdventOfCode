@@ -6,58 +6,44 @@
     @see    https://adventofcode.com/2021/day/3
 """
 
+from functools import reduce
 import sys
-from .utility import parse_binary, parse_problem
+from .utility import column_count, most_common, parse_binary, parse_problem
 
 
-def frequency_map(string_list, index):
+def rating(lines, high):
     """
-        Calculates a frequency mapping for an array of strings.
+        Calculates the rating for a list of data.
 
-            TODO:
-                - I would really want this bad boy to be a class but this is Python and I'm (~~efficient~~) lazy.
-
-        @param string_list  The array of strings.
-        @param index        The string index of the chars to compare.
-        @return             A char -> int map describing how many times a character appeared
-                            at the specified index in all the strings.
+        @param lines    The list of data.
+        @param most     Whether to pick the highest (True) value, or the lowest (False).
+        @param prefer   The value to prefer in the case of a tie.
     """
 
-    frequencies = {}
-    for string in string_list:
-        if index >= len(string):
-            continue
+    array = lines.copy()
 
-        char = string[index]
+    index = 0
+    while len(array) > 1:
+        char = most_common(column_count(array, index), most=high, prefer=("1" if high else "0"))
+        array = [line for line in array if line[index] is char]
+        index += 1
 
-        if char not in frequencies:
-            frequencies[char] = 0
-
-        frequencies[char] += 1
-
-    return frequencies
+    return parse_binary(array[0])
 
 
-def most_common(frequency_map, most=True):
+def solve():
     """
-        Find the most frequent character in a frequency map.
+        Solves the problem for December 03.
 
-        @param frequency_map    The frequency map as described by #frequency_map(list, int).
-        @param most             If True, the most frequent character is selected, otherwise the least frequent.
+        @return the solution to the problem.
     """
 
-    compare = sys.maxsize * (-1 if most else 1)
-    result = ''
+    lines = parse_problem(__name__)
 
-    for char, amount in frequency_map.items():
-        if most and amount > compare:
-            compare = amount
-            result = char
-        elif not most and amount < compare:
-            compare = amount
-            result = char
+    return reduce((lambda x, y: x * y), [rating(lines, highest) for highest in [True, False]])
 
-    return result
+
+""" ************************************************** First half ************************************************* """
 
 
 def character_vote(string_list):
@@ -72,7 +58,7 @@ def character_vote(string_list):
     result = []
 
     while index < max([len(x) for x in string_list]):
-        result.append(most_common(frequency_map(string_list, index)))
+        result.append(most_common(column_count(string_list, index)))
         index += 1
 
     return "".join(result)
@@ -84,26 +70,19 @@ def invert(binary):
         @return         The input string binary-inverted.
     """
 
-    result = []
+    return "".join({ "0": "1", "1": "0" }[digit] for digit in binary)
 
-    for digit in binary:
-        if digit not in ["0", "1"]:
-            raise ValueError(f"Invalid digit in string: {digit}")
-
-        result.append("0" if digit == "1" else "1")
-
-    return "".join(result)
-
-
-def solve():
+def first_half():
     """
-        Solves the problem for December 03.
+        Solves the first half of the problem.
 
-        @return the solution to the problem.
+        @return The solution to the first part of the problem.
     """
 
     gamma_string = character_vote(parse_problem(__name__))
-    gamma = int(parse_binary(gamma_string)[0])
-    epsilon = int(parse_binary(invert(gamma_string))[0])
+    gamma = parse_binary(gamma_string)
+    epsilon = parse_binary(invert(gamma_string))
 
     return gamma * epsilon
+
+""" *************************************************************************************************************** """

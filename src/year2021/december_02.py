@@ -53,7 +53,7 @@ def solve():
     """
         Solves the problem for December 02.
 
-        @return the solution to the problem.
+        @return The solution to the problem.
     """
 
     the_path = os.path.join(os.path.dirname(__file__), "data/december_02.txt")
