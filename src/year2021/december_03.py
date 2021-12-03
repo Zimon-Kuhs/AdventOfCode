@@ -6,10 +6,61 @@
     @see    https://adventofcode.com/2021/day/3
 """
 
+import sys
 from .utility import parse_binary, parse_problem
 
 
-def most_common_chars(string_list):
+def frequency_map(string_list, index):
+    """
+        Calculates a frequency mapping for an array of strings.
+
+            TODO:
+                - I would really want this bad boy to be a class but this is Python and I'm (~~efficient~~) lazy.
+
+        @param string_list  The array of strings.
+        @param index        The string index of the chars to compare.
+        @return             A char -> int map describing how many times a character appeared
+                            at the specified index in all the strings.
+    """
+
+    frequencies = {}
+    for string in string_list:
+        if index >= len(string):
+            continue
+
+        char = string[index]
+
+        if char not in frequencies:
+            frequencies[char] = 0
+
+        frequencies[char] += 1
+
+    return frequencies
+
+
+def most_common(frequency_map, most=True):
+    """
+        Find the most frequent character in a frequency map.
+
+        @param frequency_map    The frequency map as described by #frequency_map(list, int).
+        @param most             If True, the most frequent character is selected, otherwise the least frequent.
+    """
+
+    compare = sys.maxsize * (-1 if most else 1)
+    result = ''
+
+    for char, amount in frequency_map.items():
+        if most and amount > compare:
+            compare = amount
+            result = char
+        elif not most and amount < compare:
+            compare = amount
+            result = char
+
+    return result
+
+
+def character_vote(string_list):
     """
         Builds a string from the most common characters in a list of strings, per index.
 
@@ -20,36 +71,8 @@ def most_common_chars(string_list):
     index = 0
     result = []
 
-    while string_list:
-
-        chars = {}
-        deleted = []
-
-        for string in string_list:
-            if index >= len(string):
-                deleted.append(string)
-                continue
-
-            char = string[index]
-
-            if char not in chars:
-                chars[char] = 0
-
-            chars[char] += 1
-
-        string_list = [element for element in string_list if element not in deleted]
-        if not string_list:
-            break
-
-        max_amount = -1
-        common = ''
-
-        for char, amount in chars.items():
-            if amount > max_amount:
-                max_amount = amount
-                common = char
-
-        result.append(common)
+    while index < max([len(x) for x in string_list]):
+        result.append(most_common(frequency_map(string_list, index)))
         index += 1
 
     return "".join(result)
@@ -79,7 +102,7 @@ def solve():
         @return the solution to the problem.
     """
 
-    gamma_string = most_common_chars(parse_problem(__name__))
+    gamma_string = character_vote(parse_problem(__name__))
     gamma = int(parse_binary(gamma_string)[0])
     epsilon = int(parse_binary(invert(gamma_string))[0])
 
