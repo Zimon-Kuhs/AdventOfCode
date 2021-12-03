@@ -212,9 +212,11 @@ def tests(start,
 
 
 if __name__ == "__main__":
-    if len(sys.argv) <= 1 or not any(["-f" in sys.argv, "-F" in sys.argv]):
+    if len(sys.argv) != 3 or sys.argv[2] != "-f" and sys.argv[2] != "-F":
         print("To run this script, you have to enforce it with -f or -F.")
         sys.exit(1)
 
-    dates(1, 25, year=2021)
-    tests(1, 25, year=2021)
+    year = int(sys.argv[1])
+
+    dates(1, 25, year)
+    tests(1, 25, year)
