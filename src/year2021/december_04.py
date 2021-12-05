@@ -10,7 +10,7 @@
 from .utility import Board, parse_problem, ParseError
 
 
-def find_winner(boards, draws):
+def find_winner(boards, draws, loser=False):
     """
         Find the winner of a bingo game.
 
@@ -20,11 +20,22 @@ def find_winner(boards, draws):
         @see            .utility.Board
     """
 
+    index = 0
+    indices = []
+    the_boards = {}
+    for board in boards:
+        the_boards[index] = board
+        index += 1
+
     for draw in draws:
-        for board in boards:
+        for index, board in the_boards.items():
+            if index in indices:
+                continue
+
             if board.check(draw):
-                return draw * board.sum_unchecked()
-    return -1
+                if not loser or len(indices) == len(the_boards) - 1:
+                    return draw * board.sum_unchecked()
+                indices.append(index)
 
 
 def solve():
@@ -46,4 +57,4 @@ def solve():
     if len(lines):
         raise ParseError(f"{len(lines)} lines left!")
 
-    return find_winner(boards, draws)
+    return find_winner(boards, draws, loser=True)
