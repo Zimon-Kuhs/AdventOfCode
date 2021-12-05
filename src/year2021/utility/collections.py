@@ -1,11 +1,89 @@
 """
     Utility functions for collections.
 
+    TODO:
+        - Own file for classes maybe?
+
     @author Zimon Kuhs
     @date 2021-12-03
 """
 
 import sys
+
+
+class Board:
+    """
+        Class for a bingo board.
+        <p>
+        I might've gone overBoard (hehu) with it.
+        <p>
+        TODO:
+            - There might be a solution where the rows and columns checked are "tallied" so that a complete
+              row/column-wise check does not have to be performed every single time a number is checked.
+
+        @attribute board        List of list containing the numbers.
+        @attribute my_string    The string representation of the board.
+        @attribute rows         The number of rows in the board.
+        @attribute widths       The rows' widths.
+    """
+
+    def __init__(self, lines):
+        self.board = []
+        self.checked = []
+        self.numbers = {}
+
+        for line in lines:
+
+            array = []
+            for number in [int(number) for number in line.split()]:
+                array.append(number)
+
+            self.board.append(array)
+
+        for row in range(len(self.board)):
+
+            array = []
+            for column in range(len(self.board[row])):
+                array.append(False)
+                self.numbers[self.board[row][column]] = (row, column)
+
+            self.checked.append(array)
+
+        self.my_string = str(self.board)
+
+
+    def check(self, number):
+        if number not in self.numbers:
+            return False
+
+        row, column = self.numbers[number]
+        self.checked[row][column] = True
+
+        if self.row_complete(row) or self.column_complete(column):
+            return True
+
+        return False
+
+
+    def row_complete(self, row):
+        return all([check for check in self.checked[row]])
+
+
+    def column_complete(self, column):
+        return all([self.checked[row][column] for row in range(len(self.board))])
+
+
+    def sum_unchecked(self):
+        sum = 0
+        for row in range(len(self.board)):
+            for column in range(len(self.board[row])):
+                if not self.checked[row][column]:
+                    sum += self.board[row][column]
+        return sum
+
+    # @Override
+    def __str__(self):
+        return self.my_string
 
 
 def column_count(matrix, column=0):

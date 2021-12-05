@@ -9,10 +9,14 @@ from os.path import basename, dirname, join, realpath
 
 from .binary      import *
 from .collections import *
+from .errors      import *
 
 
 def parse_problem(script):
     """
+        TODO:
+            - Move to another file?
+
         @return All lines in a file as a list.
     """
 

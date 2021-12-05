@@ -30,7 +30,7 @@ class Test2021(unittest.TestCase):
         self.assertEqual(7928162, year.december_03())
 
     def test_december_04(self):
-        self.assertEqual("TBI", year.december_04())
+        self.assertEqual(2745, year.december_04())
 
     def test_december_05(self):
         self.assertEqual("TBI", year.december_05())
