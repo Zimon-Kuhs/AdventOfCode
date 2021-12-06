@@ -34,7 +34,7 @@ def find_winner(boards, draws, loser=False):
 
             if board.check(draw):
                 if not loser or len(indices) == len(the_boards) - 1:
-                    return draw * board.sum_unchecked()
+                    return draw * board.sum_cells(checked=False)
                 indices.append(index)
 
 
@@ -45,14 +45,13 @@ def solve():
         @return the solution to the problem.
     """
 
-
     lines = parse_problem(__name__)
     draws = [int(number) for number in lines.pop(0).split(",")]
 
     boards = []
     while len(lines) >= 5:
-        boardLines, lines = lines[1:6], lines[6:]
-        boards.append(Board(boardLines))
+        board_lines, lines = lines[1:6], lines[6:]
+        boards.append(Board(board_lines))
 
     if len(lines):
         raise ParseError(f"{len(lines)} lines left!")

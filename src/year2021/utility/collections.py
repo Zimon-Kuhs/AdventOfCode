@@ -6,7 +6,10 @@
 
     @author Zimon Kuhs
     @date 2021-12-03
+
 """
+
+# pylint: disable=use-a-generator
 
 import sys
 
@@ -40,19 +43,25 @@ class Board:
 
             self.board.append(array)
 
-        for row in range(len(self.board)):
+        for row, _ in enumerate(self.board):
 
             array = []
-            for column in range(len(self.board[row])):
+            for column, number in enumerate(self.board[row]):
                 array.append(False)
-                self.numbers[self.board[row][column]] = (row, column)
+                self.numbers[number] = (row, column)
 
             self.checked.append(array)
 
         self.my_string = str(self.board)
 
-
     def check(self, number):
+        """
+            Marks a cell.
+
+            @param number   The number to mark.
+            @return         True if marking the number completed the bord, False otherwise.
+        """
+
         if number not in self.numbers:
             return False
 
@@ -64,22 +73,36 @@ class Board:
 
         return False
 
-
     def row_complete(self, row):
+        """
+            Checks whether or not the specified row is fully marked.
+
+            @param row  The row to check.
+            @return     True if the row is fully checked, False otherwise.
+        """
+
         return all([check for check in self.checked[row]])
 
-
     def column_complete(self, column):
-        return all([self.checked[row][column] for row in range(len(self.board))])
+        """
+            Checks whether or not the specified column is fully marked.
 
+            @param column   The column to check.
+            @return         True if the column is fully checked, False otherwise.
+        """
 
-    def sum_unchecked(self):
-        sum = 0
-        for row in range(len(self.board)):
-            for column in range(len(self.board[row])):
-                if not self.checked[row][column]:
-                    sum += self.board[row][column]
-        return sum
+        return all([self.checked[row][column] for row, _ in enumerate(self.board)])
+
+    def sum_cells(self, checked=False):
+        """
+            @param checked  Flag specifying whether to sum checked or unchecked cells.
+            @return         The sum of the numbers in all unchecked cells.
+        """
+
+        return sum([number
+                    for row, _ in enumerate(self.board)
+                    for column, number in enumerate(self.board[row])
+                    if self.checked[row][column] is checked])
 
     # @Override
     def __str__(self):
@@ -136,9 +159,11 @@ def most_common(frequency_map, most=True, prefer=None):
     for char, amount in frequency_map.items():
 
         # I'm well aware this can be done a few magnitudes more readable, but it's hilarious to me that this works.
+        # pylint: disable=too-many-boolean-expressions
         if most and amount > compare or \
             not most and amount < compare or\
-            amount is compare and result is not prefer and result not in prefer and (char is prefer or char in prefer):
+                amount is compare and result is not prefer and \
+                result not in prefer and (char is prefer or char in prefer):
 
             compare = amount
             result = char

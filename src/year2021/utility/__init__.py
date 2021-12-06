@@ -7,9 +7,9 @@
 
 from os.path import basename, dirname, join, realpath
 
-from .binary      import *
+from .binary import *
 from .collections import *
-from .errors      import *
+from .errors import *
 
 
 def parse_problem(script):
