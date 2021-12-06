@@ -7,7 +7,6 @@
 """
 
 from functools import reduce
-import sys
 from .utility import column_count, most_common, parse_binary, parse_problem
 
 
@@ -70,7 +69,8 @@ def invert(binary):
         @return         The input string binary-inverted.
     """
 
-    return "".join({ "0": "1", "1": "0" }[digit] for digit in binary)
+    return "".join({"0": "1", "1": "0"}[digit] for digit in binary)
+
 
 def first_half():
     """
@@ -84,5 +84,6 @@ def first_half():
     epsilon = parse_binary(invert(gamma_string))
 
     return gamma * epsilon
+
 
 """ *************************************************************************************************************** """
