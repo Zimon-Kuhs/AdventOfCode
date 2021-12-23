@@ -211,12 +211,76 @@ def tests(start,
             the_file.write(f"{line}\n")
 
 
+def generate_c_files(
+        start,
+        end,
+        input_path,
+        output_folder,
+        year=2015):
+
+    lines = as_string(input_path).split("\n")
+
+    with open(f"{output_folder}/year{year}.h", "w", encoding="utf-8") as the_file:
+        the_file.write(f"#ifndef __YEAR_{year}__\n")
+        the_file.write(f"#define __YEAR_{year}__\n\n")
+
+        for date in range(start, end + 1):
+            the_file.write(f"int december{date:02d}();\n")
+
+        the_file.write(f"\n#endif  // __YEAR_{year}__\n")
+
+    for date in range(start, end + 1):
+        with open(f"{output_folder}/december{date:02d}.c", "w", encoding="utf-8") as the_file:
+            for line in lines:
+                the_file.write(line.replace("DD", f"{date:02d}") + "\n")
+
+
+def generate_c_tests(start,
+                     end,
+                     input_path,
+                     output_path="test",
+                     year=2015):
+
+    lines = [
+        "START_TEST (test_DD) {",
+        "",
+        "fail_unless(decemberDD() == 0, \"December DD failed.\");",
+        "",
+        "} END_TEST"
+    ]
+
+    output = []
+    for line in as_string(input_path).split("\n"):
+        if line == "#define TESTS_HERE":
+
+            output.append(f"#include \"year{year}.h\"\n")
+
+            for date in range(start, end + 1):
+                for test_line in lines:
+                    output.append(test_line.replace("DD", f"{date:02d}"))
+                output.append("")
+
+        elif line == "#define TEST_CASES_HERE":
+            for date in range(start, end + 1):
+                output.append(f"    tcase_add_test(tc1_1, test_{date:02d});")
+
+        else:
+            output.append(line)
+
+    with open(f"{output_path}/test{year}.c", "w", encoding="utf-8") as the_file:
+        for line in output:
+            the_file.write(line + "\n")
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 3 or sys.argv[2] != "-f" and sys.argv[2] != "-F":
         print("To run this script, you have to enforce it with -f or -F.")
         sys.exit(1)
 
-    year = int(sys.argv[1])
+    parsed = int(sys.argv[1])
 
-    dates(1, 25, year)
-    tests(1, 25, year)
+    generate_c_tests(1, 25, "dev/c/tests.c", output_path="test")
+    generate_c_files(1, 25, "dev/c/problem.c", f"src/year{parsed}", parsed)
+
+    # dates(1, 25, year)
+    # tests(1, 25, year)

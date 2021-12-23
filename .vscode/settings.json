@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "json": "jsonc",
+        "check.h": "c"
+    },
+
+    "C_Cpp.default.includePath"                          : [
+        "${workspaceFolder}/**",
+        "/mnt/build/Repos/ptzcounter/**",
+        // "/usr/lib/**",
+        "/usr/include/**",
+        "/usr/src/**",
+        "/usr/local/arm/r25/include/**",
+        "/usr/local/arm/r27/include/**",
+        "/usr/local/armhf/r26/arm-axis-linux-gnueabihf/sys-root/usr/include/**",
+        "/usr/local/armhf/r27/arm-axis-linux-gnueabihf/sys-root/usr/include/**",
+        "/lib/modules/5.10.0-0.bpo.9-amd64/build/include",
+        "/opt/axis/acapsdk/4.00.1/cortexa9hf-neon/sysroots/cortexa9hf-neon-poky-linux-gnueabi/usr/include",
+    ],
+}

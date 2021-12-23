@@ -1,12 +1,11 @@
 # Languages to use.
 
-1.  Python
-2.  C
-3.  C++
-4.  Go
-5.  Java     // If you can get it working *this* time...
-6.  R
-7.  Kotlin
-8.  C#
-9.  Scala
-10. Ruby?
+| Year | Language | @# |
+|------|----------|----|
+| 2015 | C        | #1 |
+| 2016 | C++      | #1 |
+| 2017 | Haskell  | #1 |
+| 2018 | R        | #1 |
+| 2019 | C#       | #1 |
+| 2020 | Scala    | #1 |
+| 2021 | Python   | #1 |
