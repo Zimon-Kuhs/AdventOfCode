@@ -5,6 +5,8 @@
     @date   2021-12-25
 """
 
+from .utility import *
+
 
 def solve():
     """
@@ -14,3 +16,4 @@ def solve():
     """
 
     return "TBI"
+

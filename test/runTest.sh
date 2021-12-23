@@ -56,7 +56,7 @@ elif [ "$1" = "2019" ]; then
 elif [ "$1" = "2020" ]; then
     fail "Year $1 not implemented."
 elif [ "$1" = "2021" ]; then
-    cd .. && python3 test/test_2021.py
+    cd .. && python3 test/test2021.py
 else
     fail "Year $1 not implemented and is currently not considered to be either."
 fi

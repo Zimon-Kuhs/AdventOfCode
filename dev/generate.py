@@ -261,21 +261,25 @@ def generatePython(year, blueprint, source, test):
     # # # # # # # # # # # # # # # # # # # # #   Tester file generation.    # # # # # # # # # # # # # # # # # # # # #
 
     lines = docString(year, "\"\"\"", "    ")
+    lines.append("")
 
     for line in includes("import", ["os", "sys"]):
         lines.append(line)
-    lines.append("\nsys.path.append(os.path.abspath(\"./src\"))")
+    lines.append("\nsys.path.append(os.path.abspath(\"./src\"))\n")
 
-    for line in includes("import", ["unittest", f"year{year} as year"]):
+    for line in includes("import", ["unittest", f"year{year} as year", ""]):
         lines.append(line)
 
-    lines.append(f"class Test{year}(unittest.TestCase):\n\n")
+    lines.append("\n# pylint: disable=missing-function-docstring")
+    lines.append(f"class Test{year}(unittest.TestCase):")
+    lines.append("    \"\"\"\n        Does a bunch of testing.\n    \"\"\"\n")
 
     for date in range(1, 26):
-        lines.append(insertTime("def test_december_DD(self):\n    self.assertEqual(\"TBI\", year.december_DD())\n",
-                                year, date))
+        lines.append(insertTime(
+            "    def test_december_DD(self):\n        self.assertEqual(\"TBI\", year.decemberDD())\n",
+            year, date))
 
-    lines.append("if __name__ == \"__main__\":\n    unittest.main()")
+    lines.append("\nif __name__ == \"__main__\":\n    unittest.main()")
 
     with open(f"{test}/test{year}.py", "w", encoding="utf-8") as the_file:
         for line in lines:
@@ -285,7 +289,7 @@ def generatePython(year, blueprint, source, test):
 
     with open(f"{source}/year{year}/__init__.py", "w", encoding="utf-8") as init:
         for date in range(1, 26):
-            name = f"december{date}"
+            name = insertTime("decemberDD", year, date)
             init.write(f"from .{name} import solve as {name}\n")
 
     # # # # # # # # # # # # # # # # # # # # #   Source file generation.    # # # # # # # # # # # # # # # # # # # # #

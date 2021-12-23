@@ -16,7 +16,7 @@ def solve():
         @return The solution to the problem.
     """
 
-    return sonar_sweep(os.path.join(os.path.dirname(__file__), "data/december_01.txt"), 3)
+    return sonar_sweep(os.path.join(os.path.dirname(__file__), "data/december01.txt"), 3)
 
 
 def sonar_sweep(data_path, length):

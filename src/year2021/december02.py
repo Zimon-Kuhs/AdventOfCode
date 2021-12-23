@@ -56,7 +56,7 @@ def solve():
         @return The solution to the problem.
     """
 
-    the_path = os.path.join(os.path.dirname(__file__), "data/december_02.txt")
+    the_path = os.path.join(os.path.dirname(__file__), "data/december02.txt")
 
     with open(the_path, "r", encoding="utf-8") as data:
         depth, length = position(data.readlines())

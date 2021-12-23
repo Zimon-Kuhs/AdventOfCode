@@ -5,95 +5,95 @@
     @date   2021-12-01
 """
 
-
 import os
 import sys
-import unittest
 
 sys.path.append(os.path.abspath("./src"))
 
-# pylint: disable=import-error, wrong-import-position
-# pep8: disable=E402
-import year2021 as year     # noqa
+import unittest
+import year2021 as year
 
 
-# pylint: disable=missing-class-docstring, missing-function-docstring
+# pylint: disable=missing-function-docstring
 class Test2021(unittest.TestCase):
+    """
+        Does a bunch of testing.
+    """
 
     def test_december_01(self):
-        self.assertEqual(1608, year.december_01())
+        self.assertEqual(1608, year.december01())
 
     def test_december_02(self):
-        self.assertEqual(1942068080, year.december_02())
+        self.assertEqual(1942068080, year.december02())
 
     def test_december_03(self):
-        self.assertEqual(7928162, year.december_03())
+        self.assertEqual(7928162, year.december03())
 
     def test_december_04(self):
-        self.assertEqual(6594, year.december_04())
+        self.assertEqual(6594, year.december04())
 
     def test_december_05(self):
-        self.assertEqual("TBI", year.december_05())
+        self.assertEqual("TBI", year.december05())
 
     def test_december_06(self):
-        self.assertEqual("TBI", year.december_06())
+        self.assertEqual("TBI", year.december06())
 
     def test_december_07(self):
-        self.assertEqual("TBI", year.december_07())
+        self.assertEqual("TBI", year.december07())
 
     def test_december_08(self):
-        self.assertEqual("TBI", year.december_08())
+        self.assertEqual("TBI", year.december08())
 
     def test_december_09(self):
-        self.assertEqual("TBI", year.december_09())
+        self.assertEqual("TBI", year.december09())
 
     def test_december_10(self):
-        self.assertEqual("TBI", year.december_10())
+        self.assertEqual("TBI", year.december10())
 
     def test_december_11(self):
-        self.assertEqual("TBI", year.december_11())
+        self.assertEqual("TBI", year.december11())
 
     def test_december_12(self):
-        self.assertEqual("TBI", year.december_12())
+        self.assertEqual("TBI", year.december12())
 
     def test_december_13(self):
-        self.assertEqual("TBI", year.december_13())
+        self.assertEqual("TBI", year.december13())
 
     def test_december_14(self):
-        self.assertEqual("TBI", year.december_14())
+        self.assertEqual("TBI", year.december14())
 
     def test_december_15(self):
-        self.assertEqual("TBI", year.december_15())
+        self.assertEqual("TBI", year.december15())
 
     def test_december_16(self):
-        self.assertEqual("TBI", year.december_16())
+        self.assertEqual("TBI", year.december16())
 
     def test_december_17(self):
-        self.assertEqual("TBI", year.december_17())
+        self.assertEqual("TBI", year.december17())
 
     def test_december_18(self):
-        self.assertEqual("TBI", year.december_18())
+        self.assertEqual("TBI", year.december18())
 
     def test_december_19(self):
-        self.assertEqual("TBI", year.december_19())
+        self.assertEqual("TBI", year.december19())
 
     def test_december_20(self):
-        self.assertEqual("TBI", year.december_20())
+        self.assertEqual("TBI", year.december20())
 
     def test_december_21(self):
-        self.assertEqual("TBI", year.december_21())
+        self.assertEqual("TBI", year.december21())
 
     def test_december_22(self):
-        self.assertEqual("TBI", year.december_22())
+        self.assertEqual("TBI", year.december22())
 
     def test_december_23(self):
-        self.assertEqual("TBI", year.december_23())
+        self.assertEqual("TBI", year.december23())
 
     def test_december_24(self):
-        self.assertEqual("TBI", year.december_24())
+        self.assertEqual("TBI", year.december24())
 
     def test_december_25(self):
-        self.assertEqual("TBI", year.december_25())
+        self.assertEqual("TBI", year.december25())
 
 
 if __name__ == "__main__":

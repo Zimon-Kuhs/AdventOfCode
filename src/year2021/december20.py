@@ -1,16 +1,19 @@
 """
-    Solves the 2021-12-14 problem.
+    Solves the 2021-12-20 problem.
 
     @author Zimon Kuhs
-    @date   2021-12-14
+    @date   2021-12-20
 """
+
+from .utility import *
 
 
 def solve():
     """
-        Solves the problem for December 14.
+        Solves the problem for December 20.
 
         @return the solution to the problem.
     """
 
     return "TBI"
+
