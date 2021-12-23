@@ -1,5 +1,5 @@
-#ifndef __YEAR_2015__
-#define __YEAR_2015__
+#ifndef __YEAR_2015_H__
+#define __YEAR_2015_H__
 
 int december01();
 int december02();
@@ -27,4 +27,4 @@ int december23();
 int december24();
 int december25();
 
-#endif  // __YEAR_2015__
+#endif  // __YEAR_2015_H__

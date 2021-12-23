@@ -5,282 +5,312 @@
     @date   2021-11-24
 """
 
-import os
 import sys
 
 
-class Prefix:
+def EXTENSION_MAP():
     """
-        Utility class representing a prefix and its level.
-
-        @attribute level    The current prefix depth.
-        @attribute space    The string to be used as a prefix.
+        Constant.
     """
 
-    def __init__(self, space):
-        self.level = 0
-        self.space = space
-
-    def string(self):
-        """
-            Retrieve the prefix' current string representation.
-
-            @return The prefix repeated `level` times.
-        """
-
-        result = ""
-        for _ in range(0, self.level):
-            result = f"{self.space}{result}"
-        return result
-
-    def adjust(self, adjustment=1):
-        """
-            Modify the prefix' current level.
-
-            @param adjustment   The adjustment to make.
-        """
-
-        self.set_level(self.level + adjustment)
-
-    def set_level(self, level=0):
-        """
-            Set the prefix current level.
-
-            @param level    The level to set to.
-        """
-
-        self.level = level
+    return {
+        2015: "c",
+        2016: "cpp",
+        2017: "hs",
+        2018: "r",
+        2019: "cs",
+        2020: "scala",
+        2021: "py"
+    }
 
 
-def as_string(file_path):
+def GENERATOR_MAP():
     """
-        Reads a file as a string.
-
-        @param file_path    Path to the file to read.
-        @return             The contents of `file_path` as a string.
+        Constant.
     """
 
-    with open(file_path, "r", encoding="utf-8") as text_file:
-        return text_file.read()
+    return {
+        2015: generateC,
+        2016: generateCPP,
+        2017: generateHaskell,
+        2018: generateR,
+        2019: generateCS,
+        2020: generateScala,
+        2021: generatePython
+    }
 
 
-# pylint: disable=too-many-arguments, too-many-locals
-def dates(start,
-          end,
-          year=2021,
-          extension="py",
-          target_date=1,
-          target_folder="src"):
+def asLines(target):
     """
-        Generates a .py-file for each date in December up to the 25th.
+        Reads a file's lines into an array.
 
-        @param start            The starting date, inclusive.
-        @param end              The ending date, inclusive.
-        @param year             The year in question.
-        @param extension        The file extension to use.
-        @param target_date      Blueprint date number.
-        @param target_folder    Years' folder.
+        @param target   Path to the file to read.
+        @return         The contents of `file_path` as an array of lines.
     """
 
-    if [number for number in [start, end, target_date] if number < 0]:
-        raise ValueError("Date parameters must be non-zero positive.")
+    with open(target, "r", encoding="utf-8") as theFile:
+        return theFile.read().split("\n")
 
-    directory = f"{target_folder}/year{str(year)}"
-    blueprint = as_string(
-        f"{directory}/december_{target_date:02d}.{extension}"
-    )
 
-    exports = []
+def includes(statement, imports):
+    """
+        Generates a list of include/import statements.
+
+        @param statement    The statement.
+        @param imports      List of things to include/import/et.c.
+        @return             A list of statement strings.
+    """
+
+    return [f"{statement} {identifier}" if len(identifier) > 0 else "" for identifier in imports]
+
+
+def docString(year, guard, prefix):
+    """
+        Generates a docstring for a file.
+
+        @param year     The year to put in the docstring.
+        @param guard    The block comment prefix and postfix guard. If list, split into pre- and post-.
+        @param prefix   Prefix to use in front
+        @return         A generated docstring as a list of string lines.
+    """
+
+    preGuard = postGuard = guard
+    if isinstance(guard, list):
+        preGuard = guard[0]
+        postGuard = guard[1]
+
+    return [
+        preGuard,
+        f"{prefix}Tests the problems for year {year}.",
+        f"{prefix}",
+        f"{prefix}@author Zimon Kuhs",
+        f"{prefix}@date   {year}-12-01",
+        postGuard,
+    ]
+
+
+def generateSolutions(year, blueprint, output):
+    """
+        Generates solution files.
+
+        @param string   The base string.
+        @param year     The year to insert on "YYYY"
+        @return         Copy of the base string with numbers inserted over time-stamp placeholders.
+    """
+
+    lines = asLines(blueprint)
+
     for date in range(1, 26):
-
-        name = f"december_{date:02d}"
-        exports.append(name)
-
-        the_file = f"{directory}/{name}.{extension}"
-
-        print(f"Writing to {the_file}")
-        with open(the_file, "w", encoding="utf-8") as source_file:
-
-            contents = blueprint.replace(f"0{target_date}", f"{date:02d}")
-            source_file.write(contents)
-        print()
-
-    print(f"Writing to {directory}/__init__.py")
-    with open(f"{directory}/__init__.py", "w", encoding="utf-8") as init:
-        for export in exports:
-            init.write(f"from .{export} import solve as {export}\n")
-    print()
-
-
-# pylint: disable=too-many-arguments, too-many-locals
-def tests(start,
-          end,
-          year=2021,
-          extension="py",
-          folder="test"):
-    """
-        Writes a test-file.
-
-        TODO:
-            -   Add prefix to *all* written lines.
-            -   The main write loop should be split into functions.
-
-        @param start        The starting date, inclusive.
-        @param end          The ending date, inclusive.
-        @param year         The year in question.
-        @param extension    The file extension to use.
-        @param folder       The folder to write to.
-    """
-
-    name = f"Test{year}"
-
-    imports = [
-        "unittest",
-        f"year{year} as year",
-    ]
-
-    doc_string = [
-        f"Tests the problems for year {year}.",
-        "",
-        "@author Zimon Kuhs",
-        f"@date   {year}-12-01",
-    ]
-
-    function = [
-        "def test_december_DD(self):",
-        "    self.assertEqual(\"TBI\", year.december_DD())",
-    ]
-
-    the_main = [
-        "if __name__ == \"__main__\":",
-        "    unittest.main()"
-    ]
-
-    pre = Prefix("    ")
-    the_path = os.path.abspath(f"{folder}/test_{year}.{extension}")
-
-    print(f"Writing to {the_path}")
-    with open(the_path, "w", encoding="utf-8") as the_file:
-        #
-        #   Write the docstring.
-        #
-
-        if doc_string:
-            comment_guard = "\"\"\"\n"
-            the_file.write(comment_guard)
-
-            for line in doc_string:
-                the_file.write(f"    {line}\n")
-
-            the_file.write(f"{comment_guard}\n")
-
-        #
-        #   Write the imports.
-        #
-
-        the_file.write("import os\nimport sys\n\nsys.path.append(os.path.abspath(\"./src\"))\n\n")
-        for include in imports:
-            the_file.write(f"{pre.string()}import {include}\n")
-
-        the_file.write("\n")
-
-        #
-        #   Write the class.
-        #
-
-        the_file.write(f"class {name}(unittest.TestCase):\n\n")
-        pre.adjust(1)
-
-        #
-        #   Write the methods.
-        #
-
-        for date in range(start, end + 1):
-            date_str = f"{date:02d}"
-
-            for line in function:
-                rinsed = line.replace("DD", date_str)
-                the_file.write(f"{pre.string()}{rinsed}\n")
-
-            the_file.write("\n")
-
-        pre.adjust(-1)
-        the_file.write("\n")
-
-        for line in the_main:
-            the_file.write(f"{line}\n")
-
-
-def generate_c_files(
-        start,
-        end,
-        input_path,
-        output_folder,
-        year=2015):
-
-    lines = as_string(input_path).split("\n")
-
-    with open(f"{output_folder}/year{year}.h", "w", encoding="utf-8") as the_file:
-        the_file.write(f"#ifndef __YEAR_{year}__\n")
-        the_file.write(f"#define __YEAR_{year}__\n\n")
-
-        for date in range(start, end + 1):
-            the_file.write(f"int december{date:02d}();\n")
-
-        the_file.write(f"\n#endif  // __YEAR_{year}__\n")
-
-    for date in range(start, end + 1):
-        with open(f"{output_folder}/december{date:02d}.c", "w", encoding="utf-8") as the_file:
+        with open(f"{output}/year{year}/december{date:02d}.{EXTENSION_MAP()[year]}", "w", encoding="utf-8") as the_file:
             for line in lines:
-                the_file.write(line.replace("DD", f"{date:02d}") + "\n")
+                the_file.write(insertTime(line, year, date) + "\n")
 
 
-def generate_c_tests(start,
-                     end,
-                     input_path,
-                     output_path="test",
-                     year=2015):
+def insertTime(string, year, date):
+    """
+        Replaces time-stamp placeholders with actual numbers.
 
-    lines = [
-        "START_TEST (test_DD) {",
-        "",
-        "fail_unless(decemberDD() == 0, \"December DD failed.\");",
-        "",
+        @param string   The base string.
+        @param year     The year to insert on "YYYY"
+        @param date     The date to insert on "DD"
+        @return         Copy of the base string with numbers inserted over time-stamp placeholders.
+    """
+
+    return string.replace("DD", f"{date:02d}").replace("YYYY", f"{year}")
+
+
+def generateC(year, blueprint, source, test):
+    """
+        Generate C files.
+
+        @param year         The year for which to generate.
+        @param blueprint    Blueprint file for problems.
+        @param source       The output directory for solution files.
+        @param test         The output directory for the tester file.
+    """
+
+    # # # # # # # # # # # # # # # # # # # # #   Tester file generation.    # # # # # # # # # # # # # # # # # # # # #
+
+    lines = includes("#include", ["<check.h>", "", f"\"year{year}.h\""])
+    lines.append("")
+
+    testLines = [
+        "START_TEST (test_DD) {\n",
+        "    fail_unless(decemberDD() == 0, \"December DD failed.\");\n",
         "} END_TEST"
     ]
 
-    output = []
-    for line in as_string(input_path).split("\n"):
-        if line == "#define TESTS_HERE":
+    for date in range(1, 26):
+        for line in testLines:
+            lines.append(insertTime(line, year, date))
+        lines.append("")
 
-            output.append(f"#include \"year{year}.h\"\n")
+    lines.append("int main(void) {\n")
+    lines.append("    Suite *suite = suite_create(\"Core\");")
+    lines.append("    TCase *testCore = tcase_create(\"Core\");")
+    lines.append("    SRunner *suiteRunner = srunner_create(suite);")
+    lines.append("    int numberFailed;\n")
+    lines.append("    suite_add_tcase(suite, testCore);")
 
-            for date in range(start, end + 1):
-                for test_line in lines:
-                    output.append(test_line.replace("DD", f"{date:02d}"))
-                output.append("")
+    for date in range(1, 26):
+        lines.append(insertTime("    tcase_add_test(testCore, test_DD);", year, date))
 
-        elif line == "#define TEST_CASES_HERE":
-            for date in range(start, end + 1):
-                output.append(f"    tcase_add_test(tc1_1, test_{date:02d});")
+    lines.append("\n    srunner_run_all(suiteRunner, CK_ENV);")
+    lines.append("    numberFailed = srunner_ntests_failed(suiteRunner);")
+    lines.append("    srunner_free(suiteRunner);\n")
 
-        else:
-            output.append(line)
+    lines.append("    return numberFailed & 1;")
+    lines.append("}\n")
 
-    with open(f"{output_path}/test{year}.c", "w", encoding="utf-8") as the_file:
-        for line in output:
+    with open(f"{test}/test{year}.c", "w", encoding="utf-8") as output:
+        for line in lines:
+            output.write(line + "\n")
+
+    # # # # # # # # # # # # # # # # # # # # #   Header file generation.    # # # # # # # # # # # # # # # # # # # # #
+
+    with open(f"{source}/year{year}/year{year}.h", "w", encoding="utf-8") as output:
+        headerGuard = f"__YEAR_{year}_H__"
+        output.write(f"#ifndef {headerGuard}\n")
+        output.write(f"#define {headerGuard}\n\n")
+
+        for date in range(1, 26):
+            output.write(f"int december{date:02d}();\n")
+
+        output.write(f"\n#endif  // {headerGuard}\n")
+
+    # # # # # # # # # # # # # # # # # # # # #   Source file generation.    # # # # # # # # # # # # # # # # # # # # #
+
+    generateSolutions(year, blueprint, source)
+
+
+def generateCPP(blueprint, source, test):
+    """
+        Generate C++ files.
+
+        @param year         The year for which to generate.
+        @param blueprint    Blueprint file for problems.
+        @param source       The output directory for solution files.
+        @param test         The output directory for the tester file.
+    """
+
+    raise NotImplementedError("2016")
+
+
+def generateHaskell(blueprint, source, test):
+    """
+        Generate Haskell files.
+
+        @param year         The year for which to generate.
+        @param blueprint    Blueprint file for problems.
+        @param source       The output directory for solution files.
+        @param test         The output directory for the tester file.
+    """
+
+    raise NotImplementedError("2017")
+
+
+def generateR(blueprint, source, test):
+    """
+        Generate R files.
+
+        @param year         The year for which to generate.
+        @param blueprint    Blueprint file for problems.
+        @param source       The output directory for solution files.
+        @param test         The output directory for the tester file.
+    """
+
+    raise NotImplementedError("2018")
+
+
+def generateCS(blueprint, source, test):
+    """
+        Generate C# files.
+
+        @param year         The year for which to generate.
+        @param blueprint    Blueprint file for problems.
+        @param source       The output directory for solution files.
+        @param test         The output directory for the tester file.
+    """
+
+    raise NotImplementedError("2019")
+
+
+def generateScala(blueprint, source, test):
+    """
+        Generate Scala files.
+
+        @param year         The year for which to generate.
+        @param blueprint    Blueprint file for problems.
+        @param source       The output directory for solution files.
+        @param test         The output directory for the tester file.
+    """
+
+    raise NotImplementedError("2020")
+
+
+def generatePython(year, blueprint, source, test):
+    """
+        Generate Python files.
+
+        @param year         The year for which to generate.
+        @param blueprint    Blueprint file for problems.
+        @param source       The output directory for solution files.
+        @param test         The output directory for the tester file.
+    """
+
+    # # # # # # # # # # # # # # # # # # # # #   Tester file generation.    # # # # # # # # # # # # # # # # # # # # #
+
+    lines = docString(year, "\"\"\"", "    ")
+
+    for line in includes("import", ["os", "sys"]):
+        lines.append(line)
+    lines.append("\nsys.path.append(os.path.abspath(\"./src\"))")
+
+    for line in includes("import", ["unittest", f"year{year} as year"]):
+        lines.append(line)
+
+    lines.append(f"class Test{year}(unittest.TestCase):\n\n")
+
+    for date in range(1, 26):
+        lines.append(insertTime("def test_december_DD(self):\n    self.assertEqual(\"TBI\", year.december_DD())\n",
+                                year, date))
+
+    lines.append("if __name__ == \"__main__\":\n    unittest.main()")
+
+    with open(f"{test}/test{year}.py", "w", encoding="utf-8") as the_file:
+        for line in lines:
             the_file.write(line + "\n")
+
+    # # # # # # # # # # # # # # # # # # # #   __init__.py file generation.    # # # # # # # # # # # # # # # # # # # #
+
+    with open(f"{source}/year{year}/__init__.py", "w", encoding="utf-8") as init:
+        for date in range(1, 26):
+            name = f"december{date}"
+            init.write(f"from .{name} import solve as {name}\n")
+
+    # # # # # # # # # # # # # # # # # # # # #   Source file generation.    # # # # # # # # # # # # # # # # # # # # #
+
+    generateSolutions(year, blueprint, source)
 
 
 if __name__ == "__main__":
+    """
+        TODO:
+            - Take paths as arguments.
+    """
+
     if len(sys.argv) != 3 or sys.argv[2] != "-f" and sys.argv[2] != "-F":
         print("To run this script, you have to enforce it with -f or -F.")
         sys.exit(1)
 
-    parsed = int(sys.argv[1])
+    inputYear = int(sys.argv[1])
 
-    generate_c_tests(1, 25, "dev/c/tests.c", output_path="test")
-    generate_c_files(1, 25, "dev/c/problem.c", f"src/year{parsed}", parsed)
+    if inputYear not in GENERATOR_MAP():
+        raise ValueError(f"Year {inputYear} is not supported and probably won't be until it hits.")
 
-    # dates(1, 25, year)
-    # tests(1, 25, year)
+    extension = EXTENSION_MAP()[inputYear]
+    blueprintDirectory = f"dev/blueprints/{extension}/blueprint.{extension}"
+    sourceDirectory = "src"
+    testDirectory = "test"
+
+    GENERATOR_MAP()[inputYear](inputYear, blueprintDirectory, sourceDirectory, testDirectory)

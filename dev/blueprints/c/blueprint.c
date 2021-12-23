@@ -1,21 +1,20 @@
 /**
- *  Solves the 2015-12-25 problem.
+ *  Solves the YYYY-12-DD problem.
  *
  *  @author Zimon Kuhs
- *  @date   2015-12-25
+ *  @date   YYYY-12-DD
  */
 
 #include <stdio.h>
 
-#include "year2015.h"
+#include "yearYYYY.h"
 
 /**
- *  Solves the problem for December 25.
+ *  Solves the problem for December DD.
  *
  *  @return the solution to the problem.
  */
-int december25() {
+int decemberDD() {
     printf("[%s] %s: NYI!\n", __FILE__, __FUNCTION__);
     return 0;
 }
-

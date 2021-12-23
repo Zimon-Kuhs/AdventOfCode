@@ -1,12 +1,14 @@
 {
     "files.associations": {
         "json": "jsonc",
-        "check.h": "c"
+        "check.h": "c",
+        "year2015.h": "c"
     },
 
     "C_Cpp.default.includePath"                          : [
         "${workspaceFolder}/**",
         "/mnt/build/Repos/ptzcounter/**",
+        "/mnt/build/Repos/AdventOfCode",
         // "/usr/lib/**",
         "/usr/include/**",
         "/usr/src/**",
